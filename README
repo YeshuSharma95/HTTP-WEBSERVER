@@ -1,0 +1,51 @@
+*HTTP-based web server-CSCI 5273*
+
+*Objective:-To create a HTTP-based web server that handles multiple simultaneous requests from users.
+
+*In this project I have created a webserver which can handle multiple requests from the clients. The webserver is the server and the browser acts as a client.
+A web server is a program that receives requests from a client and sends the response back to the client. A client is usually a user trying to access the server using a web 
+browser (Google Chrome, Firefox).The HTTP request consists of three substrings – request method, request URL, and request version. All three parts are separated by one or more white spaces.
+
+*What has been implemented
+a)HTTP GET REQUEST
+If the server interprets the request (HTTP GET) and the requested file exists on the specified location, the server needs to send both Content-Type and Content-Length followed by an appropriate status code.
+b)HTTP POST REQUEST
+When the POST request is sent, It is handled in the same as GET and return the same web page as returned for the GET request. The response contains an additional section with a header "<h1>POST DATA</h1>" followed by a <pre> tag containing the POST 
+data.
+c)ERROR HANDLING
+When the HTTP request results in an error then the web-server responds to the client with an error code. In this assignment, all error messages are be treated as the “500 Internet Server Error” indicating that 
+the server experiences unexpected system errors.
+d)PIPELINING
+Supporting persistent connections and pipelining of client requests. I have used timeout mechanism to cut the persistent connections after 10secs.
+e)CONNECTION CLOSE
+ If there is a “Connection: close” header in the request message, the server should close the socket and response with the “Connection: Close” header line.
+
+*How to run the server
+Compile the webserver code:- gcc -o webserver webserver.c -pthread
+The server must start with port number. For example, if you run the webserver with port number 8888, then: ./webserver 8888
+Input in your browser should be like this http://127.0.0.1:8888/index.html or http://127.0.0.1:8888/ , after entering this default webpage will open.
+
+*Testing using Telnet
+POST Command
+//POST WITH KEEP-ALIVE
+(echo -en "POST /index.html HTTP/1.1\nHost: localhost\nConnection: Keep-alive\r\n\r\nPOSTDATA"; sleep 10;) | telnet 127.0.0.1 8888
+// POST WITHOUT KEEP-ALIVE
+(echo -en "POST /index.html HTTP/1.1\nHost: localhost\r\n\r\nPOSTDATA"; sleep 10;) | telnet 127.0.0.1 8888
+//POST WITH FILE Error
+(echo -en "POST /indx.html HTTP/1.1\nHost: localhost\r\n\r\nPOSTDATA"; sleep 10;) | telnet 127.0.0.1 8888
+//POST WITH HEADER
+(echo -en "POST / HTTP/1.1\nHost: localhost\r\n\r\nPOSTDATA"; sleep 10;) | telnet 127.0.0.1 8888
+//POST WRONG HTTP Version
+(echo -en "POST / HTTP/0.1\nHost: localhost\r\n\r\nPOSTDATA"; sleep 10;) | telnet 127.0.0.1 8888
+
+GET COMMAND
+//GET COMMAND WITH KEEP-ALIVE
+(echo -en "GET /index.html HTTP/1.1\nHost: localhost\nConnection: Keep-alive\r\n\r\n"; sleep 100;)|telnet 127.0.0.1 8888
+//GET COMMAND WITHOUT KEEP-ALIVE
+(echo -en "GET /index.html HTTP/1.1\nHost: localhost\r\n\r\n"; sleep 100;)|telnet 127.0.0.1 8888
+//GET COMMAND WITH FILE ERROR
+(echo -en "GET /inx.html HTTP/1.1\nHost: localhost\r\n\r\n"; sleep 100;)|telnet 127.0.0.1 8888
+//GET WITH header
+(echo -en "GET / HTTP/1.1\nHost: localhost\r\n\r\n"; sleep 100;)|telnet 127.0.0.1 8888
+//GET VERSION WRONG CHECK
+(echo -en "GET / HTTP/0.1\nHost: localhost\r\n\r\n"; sleep 100;)|telnet 127.0.0.1 8888
